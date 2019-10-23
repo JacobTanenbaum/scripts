@@ -8,9 +8,6 @@
 NETWORK_IMAGE=quay.io/jtanenba/ovn-windows:085e0cb
 CNO_IMAGE=quay.io/jtanenba/cno-windows:alphav1
 
-#MASTER_NODE=$(oc get pods -n openshift-ovn-kubernetes -o wide | awk '/ovnkube-master/ {print $7}')
-
-#echo $MASTER_NODE
 
 # allows editing to the cluster network operator
 kubectl patch --type=json -p "\
@@ -27,20 +24,7 @@ kubectl patch --type=json -p "\
     unmanaged: true
 " clusterversion version
 
-#need to cycle in the new CNO to apply a series of changes to the deployments and such...
-kubectl set image deployments network-operator network-operator=${CNO_IMAGE} -n openshift-network-operator
-
-
-#changing the image for the network operator
-# kubectl patch deployment network-operator --patch '{"spec":{"template": {"spec":{"image":"blah"}}}}' -n openshift-network-operator --dry-run -o yaml
-
-#change the OVN_IMAGE
-# kubectl patch deployment network-operator --patch '{"spec":{"template":{"spec":{"containers":[{"name":"network-operator","env":[{"name":"OVN_IMAGE","value":"blah"}]}]}}}}' -n openshift-network-operator
-
-# kubectl patch deployment network-operator --patch '{"spec":{"template":{"spec":{"image":"my_image"},{"containers":[{"name":"network-operator","env":[{"name":"OVN_IMAGE","value":"blah"}]}]}}}}' -n openshift-network-operator
-
-
-#PATCH ALL THE OVN_IMAGE and CNO_IMAGE
+#Patch the  OVN_IMAGE and CNO_IMAGE in the cluster network operator
 kubectl patch deployment network-operator --patch '{"spec":{"template":{"spec":{"image":"'${CNO_IMAGE}'","containers":[{"name":"network-operator","env":[{"name":"OVN_IMAGE","value":"'${NETWORK_IMAGE}'"}]}]}}}}' -n openshift-network-operator
 
 
