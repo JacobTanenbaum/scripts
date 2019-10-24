@@ -25,7 +25,7 @@ kubectl patch --type=json -p "\
 " clusterversion version
 
 #Patch the  OVN_IMAGE and CNO_IMAGE in the cluster network operator
-kubectl patch deployment network-operator --patch '{"spec":{"template":{"spec":{"image":"'${CNO_IMAGE}'","containers":[{"name":"network-operator","env":[{"name":"OVN_IMAGE","value":"'${NETWORK_IMAGE}'"}]}]}}}}' -n openshift-network-operator
+kubectl patch deployment network-operator --patch '{"spec":{"template":{"spec":{"containers":[{"name":"network-operator","image":"'${CNO_IMAGE}'","env":[{"name":"OVN_IMAGE","value":"'${NETWORK_IMAGE}'"}]}]}}}}' -n openshift-network-operator
 
 
 oc delete deployments ovnkube-master -n openshift-ovn-kubernetes
